@@ -1,5 +1,5 @@
 interface Note {
-    id: string,
+    _id: string,
     title: string,
     author: string,
     img: string,
