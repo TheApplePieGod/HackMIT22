@@ -1,6 +1,5 @@
 import { MongoClient } from 'mongodb'
 
-console.log(process.env);
 if (!process.env.MONGODB_PASS) {
   throw new Error('Invalid environment variable: "MONGODB_PASS"')
 }

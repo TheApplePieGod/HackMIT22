@@ -10,15 +10,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const client = await clientPromise;
     const db = client.db('prod');
 
-    let note : Note = {
-        ...req.body,
-        score: 0,
-        children: []
-    }
+    const fromId = req.body.from;
+    const toId = req.body.to;
 
     try {
         await db.collection('notes')
-            .insertOne(note);
+            .updateOne({
+                _id: fromId
+            },
+            {
+                $push: {
+                    children: toId
+                }
+            });
         res.status(200).end();
     } catch (e) {
         res.status(400).end();
