@@ -1,14 +1,8 @@
-﻿import * as React from "react";
+import * as React from "react";
 import { styled, Box, Button } from "@mui/material";
 import { useRouter } from "next/router";
 
-interface Props {
-    children?: React.ReactElement
-}
-
-export const PageWrapper: React.FunctionComponent<Props> = (props) => {
-    const router = useRouter();
-
+export const ClassPage: React.FunctionComponent = () => {
     return (
         <Box>
             <Box sx={{

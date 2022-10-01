@@ -22,7 +22,7 @@ export const createAppTheme = memoizeOne(() => {
 	let theme = createTheme({
 		palette: {
 			primary: {
-				main: amber[500],
+				main: "#7189A3",
 				dark: amber[800]
 			},
 			secondary: {
@@ -30,18 +30,16 @@ export const createAppTheme = memoizeOne(() => {
 				dark: deepOrange[800]
 			},
 			background: {
-				default: blueGrey[700],
-				paper: blueGrey[800]
+				default: "#E3F1FF",
+				paper: "#BED6F0"
 			},
 			text: {
-				primary: "#FEFFF5",
-				secondary: "#CECEC2",
-				primaryDark: "#19181D",
-				secondaryDark: "#5B5765"
+				primary: "#1C2229",
+				secondary: "#627387"
 			}
 		},
 		typography: {
-			fontFamily: "'Yanone Kaffeesatz', sans-serif",
+			fontFamily: "'Fira Sans', sans-serif",
 			h1: {
 				'@media (min-width:200px)': {
 					fontSize: '2.0rem',
