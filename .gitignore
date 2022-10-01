@@ -1,0 +1,8 @@
+.next/**
+.config/**
+util/**
+node_modules/**
+appsettings*
+package-lock.json
+.eslintrc.json
+.DS_Store
