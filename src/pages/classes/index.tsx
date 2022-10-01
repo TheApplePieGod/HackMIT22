@@ -38,7 +38,7 @@ const ClassesPage = () => {
                         {
                             TEST_CLASSES.map((c, i) => (
                                 <Box sx={{ display: "flex", alignItems: "center", width: "100%", gap: "0.5rem" }}>
-                                    <Paper key={i} 
+                                    <Paper elevation={3} key={i} 
                                         onClick={() => router.push(`/classes/${c.id}`)}
                                         sx={{
                                             display: "flex",

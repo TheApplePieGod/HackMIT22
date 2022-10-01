@@ -22,7 +22,7 @@ export const createAppTheme = memoizeOne(() => {
 	let theme = createTheme({
 		palette: {
 			primary: {
-				main: "#7189A3",
+				main: "#83a0bf",
 				dark: amber[800]
 			},
 			secondary: {
