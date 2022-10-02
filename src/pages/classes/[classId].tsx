@@ -1,7 +1,9 @@
 import * as React from "react";
-import { styled, Box, Button, Paper, Typography, Divider, IconButton } from "@mui/material";
+import { styled, Box, Button, Paper, Typography, Divider, IconButton, TextField, InputAdornment } from "@mui/material";
 import TimelineIcon from '@mui/icons-material/Timeline';
 import DescriptionIcon from '@mui/icons-material/Description';
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
 import { useRouter } from "next/router";
 
 enum ViewMode {
@@ -18,6 +20,8 @@ const ClassPage: React.FunctionComponent = () => {
     const [classData, setClassData] = React.useState<{ course: Course; notes: Note[] } | undefined>(undefined);
     const [viewMode, setViewMode] = React.useState(ViewMode.Graph2D);
     const [selectedNote, setSelectedNote] = React.useState("");
+    const [notesFilter, setNotesFilter] = React.useState("");
+    const [addDialogOpen, setAddDialogOpen] = React.useState(false);
 
     const { classId } = router.query;
 
@@ -30,7 +34,6 @@ const ClassPage: React.FunctionComponent = () => {
         ).then(async (res) => {
             if (!res.ok) return;
             const data = await res.json();
-            console.log(data);
             setClassData(data);
         });
     }, [router]);
@@ -52,10 +55,43 @@ const ClassPage: React.FunctionComponent = () => {
                 <Typography>{classData?.course.title ?? "Loading..."}</Typography>
                 <Typography color="textSecondary">{classData?.course.instructor}</Typography>
                 <Divider sx={{ margin: "0.25rem 0 0.5rem 0" }} />
+                <TextField
+                    placeholder="Filter"
+                    value={notesFilter}
+                    onChange={e => setNotesFilter((e.target.value as string))}
+                    sx={{
+                        marginBottom: "0.5rem",
+                        "& .MuiFilledInput-root": {
+                            height: "50px",
+                            paddingBottom: "15px"
+                        }
+                    }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                            <SearchIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                    variant="filled"
+                  />
                 {classData ?
                     <Box sx={{ maxHeight: "100%", overflowY: "auto", display: "flex", flexDirection: "column", gap: "5px", paddingBottom: "10px" }}>
+                        <Paper elevation={3}
+                            onClick={() => setAddDialogOpen(true)}
+                            sx={{
+                                backgroundColor: "#46ba56",
+                                display: "flex",
+                                alignItems: "center",
+                                width: "100%",
+                                padding: "10px",
+                                cursor: "pointer"
+                            }}
+                        >
+                            <Typography>+ Create</Typography>
+                        </Paper>
                         {
-                            classData.notes.map((n, i) => (
+                            [...classData.notes.filter(n => n.title.toLowerCase().startsWith(notesFilter.toLowerCase()))].sort((a, b) => a.title.localeCompare(b.title)).map((n, i) => (
                                 <Paper elevation={3} key={i} 
                                     onClick={() => setSelectedNote(n._id)}
                                     sx={{
