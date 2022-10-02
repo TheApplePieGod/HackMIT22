@@ -11,9 +11,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const db = client.db('prod');
 
     let note : Note = {
-        ...req.body,
+        ...JSON.parse(req.body),
         score: 0,
-        children: []
     }
 
     try {

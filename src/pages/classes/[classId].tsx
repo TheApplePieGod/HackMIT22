@@ -5,6 +5,7 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import { useRouter } from "next/router";
+import { AddNoteDialog } from "src/Components/UI/AddNoteDialog";
 
 enum ViewMode {
     Notes = 0,
@@ -141,9 +142,6 @@ const ClassPage: React.FunctionComponent = () => {
                     height: "100%"
                 }}>
                     <Paper elevation={5} sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
                         height: "calc(100% - 80px)",
                         margin: "40px",
                         padding: "10px",
@@ -152,7 +150,13 @@ const ClassPage: React.FunctionComponent = () => {
                         position: "relative"
                     }}>
                         {selectedNote != "" ?
-                            <img src={findNoteById(selectedNote)?.img} style={{ width: "100%", position: "absolute", top: 0 }} />
+                            <img src={findNoteById(selectedNote)?.img} style={{
+                                width: "100%",
+                                position: "absolute",
+                                top: "50%",
+                                left: 0,
+                                transform: "translateY(-50%)"
+                            }} />
                             : <Typography variant="h3">No Note Selected</Typography>
                         }
                     </Paper>
@@ -163,6 +167,12 @@ const ClassPage: React.FunctionComponent = () => {
                     Graph
                 </Box>
             </Box>
+            <AddNoteDialog
+                open={addDialogOpen}
+                onClose={() => setAddDialogOpen(false)}
+                courseId={classId as string}
+                notes={classData?.notes ?? []}
+            />
         </Box>
     );
 }
