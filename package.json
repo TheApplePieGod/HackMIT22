@@ -29,6 +29,7 @@
     "react-dom": "^18.1.0",
     "react-force-graph": "^1.41.14",
     "react-redux": "8.0.1",
+    "react-image-file-resizer": "0.4.8",
     "react-transition-group": "^4.4.5",
     "sharp": "^0.30.4"
   },

@@ -10,6 +10,7 @@ interface Note {
     author: string,
     img: string,
     dim: [number, number], //width, height in pixels
+    manims: Manim[],
     course: string,
     score: number,
     children: string[]
