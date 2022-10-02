@@ -56,6 +56,33 @@ const ClassPage: React.FunctionComponent = () => {
         setSelectedNote(id);
     }
 
+    const renderGifs = () => {
+        const result: JSX.Element[] = [];
+        const note = findNoteById(selectedNote);
+        if (!note) return result;
+        
+        console.log(note.dim)
+        note.manims.forEach((m, i) => {
+            console.log(m)
+            const widthRatio = m.dim[0] / note.dim[0];
+            const heightRatio = m.dim[1] / note.dim[1];
+            const posRatioX = m.pos[0] / note.dim[0];
+            const posRatioY = m.pos[1] / note.dim[1];
+            
+            result.push(
+                <img src={m.img} key={`${note._id}_g${i}`} style={{
+                    position: "absolute",
+                    width: `${widthRatio*100}%`,
+                    height: `${heightRatio*100}%`,
+                    top: `${posRatioY*100}%`,
+                    left: `${posRatioX*100}%`
+                }} />
+            )
+        });
+
+        return result;
+    }
+
     const duration = 500;
 
     const defaultStyle = {
@@ -193,13 +220,14 @@ const ClassPage: React.FunctionComponent = () => {
                         position: "relative"
                     }}>
                         {selectedNote != "" ?
-                            <img src={findNoteById(selectedNote)?.img} style={{
-                                width: "100%",
-                                position: "absolute",
-                                top: "50%",
-                                left: 0,
-                                transform: "translateY(-50%)"
-                            }} />
+                            <React.Fragment>
+                                <Box sx={{ position: "relative" }}>
+                                    <img src={findNoteById(selectedNote)?.img} style={{
+                                        width: "100%",
+                                    }} />
+                                    {renderGifs()}
+                                </Box>
+                            </React.Fragment>
                             : <Typography variant="h3">No Note Selected</Typography>
                         }
                     </Paper>

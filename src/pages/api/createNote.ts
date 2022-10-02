@@ -13,8 +13,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const body = JSON.parse(req.body);
     const rawImg = body.img;
 
-    console.log(body);
-    const apiRes = await fetch('http://7d2d-34-142-217-42.ngrok.io/', {
+    const apiRes = await fetch('http://3d31-34-66-160-157.ngrok.io/', {
         method: 'POST',
         headers: {
             "Content-Type": "application/json"
@@ -23,15 +22,26 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             base64: rawImg
         })
     });
+    
+    if (!apiRes.ok) {
+        res.status(500).end();
+        return;
+    }
+
     const json = await apiRes.json();
     console.log(json);
 
-    res.status(200).end();
-    return;
+    const manims : Manim[] = [{
+        pos: [json.box[0], json.box[1]],
+        dim: [json.box[2] - json.box[0], json.box[3] - json.box[1]],
+        img: json.gif
+    }];
 
-    let note : Note = {
+    const note : Note = {
         ...JSON.parse(req.body),
+        img: json.img,
         score: 0,
+        manims: manims
     }
 
     try {
