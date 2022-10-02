@@ -7,6 +7,10 @@ import AddIcon from '@mui/icons-material/Add';
 import { useRouter } from "next/router";
 import { AddNoteDialog } from "src/Components/UI/AddNoteDialog";
 import { NextSeo } from "next-seo";
+import dynamic from "next/dynamic";
+import { Transition } from 'react-transition-group';
+
+const NoteForceGraph = dynamic(() => import("../../Components/UI/NoteForceGraph"), {ssr: false});
 
 enum ViewMode {
     Notes = 0,
@@ -46,6 +50,27 @@ const ClassPage: React.FunctionComponent = () => {
 
     const findNoteById = (id: string) =>
         classData?.notes.find(n => n._id == id);
+
+    const displayNote = (id: string) => {
+        setViewMode(ViewMode.Notes);
+        setSelectedNote(id);
+    }
+
+    const duration = 500;
+
+    const defaultStyle = {
+        transition: `opacity ${duration}ms ease-in-out`,
+        opacity: 0,
+    }
+
+    const transitionStyles: any = {
+        entering: { opacity: 0 },
+        entered:  { opacity: 1 },
+        exiting:  { opacity: 1 },
+        exited:  { opacity: 0 },
+    };
+
+    const transitionRef = React.useRef<HTMLDivElement>();
 
     return (
         <Box>
@@ -180,9 +205,20 @@ const ClassPage: React.FunctionComponent = () => {
                     </Paper>
                 </Box>
                 <Box sx={{
-                    display: viewMode == ViewMode.Graph2D ? "" : "none"
+                    display: viewMode == ViewMode.Graph2D ? "" : "none",
                 }}>
-                    Graph
+                    {classData && 
+                        <Transition in={viewMode == ViewMode.Graph2D} timeout={duration}>
+                        {state => (
+                            <div style={{
+                            ...defaultStyle,
+                            ...transitionStyles[state]
+                            }}>
+                                <NoteForceGraph notes={classData.notes} displayNote={displayNote}/>
+                            </div>
+                        )}
+                        </Transition>
+                    }
                 </Box>
             </Box>
             <AddNoteDialog
