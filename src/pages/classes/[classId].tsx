@@ -28,9 +28,7 @@ const ClassPage: React.FunctionComponent = () => {
 
     const { classId } = router.query;
 
-    React.useEffect(() => {
-        if (!router.isReady) return;
-        
+    const reloadData = () => {
         fetch(
             `/api/getNotes/${classId}`,
             { method: "GET" }
@@ -39,6 +37,11 @@ const ClassPage: React.FunctionComponent = () => {
             const data = await res.json();
             setClassData(data);
         });
+    }
+
+    React.useEffect(() => {
+        if (!router.isReady) return;
+        reloadData();
     }, [router]);
 
     const findNoteById = (id: string) =>
@@ -59,6 +62,7 @@ const ClassPage: React.FunctionComponent = () => {
                 padding: "5px",
                 top: 0,
                 left: 0,
+                backgroundColor: "primary.main"
             }}>
                 <Typography>{classData?.course.title ?? "Loading..."}</Typography>
                 <Typography color="textSecondary">{classData?.course.instructor}</Typography>
@@ -187,6 +191,7 @@ const ClassPage: React.FunctionComponent = () => {
                 courseId={classId as string}
                 notes={classData?.notes ?? []}
                 editingNoteId={editingNodeId}
+                reloadData={reloadData}
             />
         </Box>
     );

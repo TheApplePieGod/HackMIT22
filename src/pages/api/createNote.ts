@@ -13,9 +13,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const body = JSON.parse(req.body);
     const rawImg = body.img;
 
-    console.log(rawImg);
-    const apiRes = await fetch('http://197d-34-142-217-42.ngrok.io/', {
+    console.log(body);
+    const apiRes = await fetch('http://7d2d-34-142-217-42.ngrok.io/', {
         method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify({
             base64: rawImg
         })

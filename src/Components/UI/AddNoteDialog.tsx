@@ -8,6 +8,7 @@ interface Props {
     courseId: string;
     notes: Note[];
     editingNoteId: string;
+    reloadData: () => void;
 }
 
 export const AddNoteDialog: React.FunctionComponent<Props> = (props) => {
@@ -31,23 +32,40 @@ export const AddNoteDialog: React.FunctionComponent<Props> = (props) => {
         props.notes.find(n => n._id == id);
 
     const onSave = () => {
-        fetch(
-            "/api/createNote",
-            { method: "POST", body: JSON.stringify({
-                _id: uuid(),
-                title: title,
-                author: "Evan",
-                img: null, //b64encode(image ?? []),
-                dim: imageDims,
-                course: props.courseId,
-                score: 0,
-                children: links
-            })}
-        ).then(res => {
-            if (res.ok) {
-                props.onClose();
-            }
-        })
+        if (props.editingNoteId == "") {
+            fetch(
+                "/api/createNote",
+                { method: "POST", body: JSON.stringify({
+                    _id: uuid(),
+                    title: title,
+                    author: "Evan",
+                    img: b64encode(image ?? []),
+                    dim: imageDims,
+                    course: props.courseId,
+                    score: 0,
+                    children: links
+                })}
+            ).then(res => {
+                if (res.ok) {
+                    onClose();
+                    props.reloadData();
+                }
+            })
+        } else {
+            fetch(
+                "/api/updateNote",
+                { method: "POST", body: JSON.stringify({
+                    _id: props.editingNoteId,
+                    title: title,
+                    children: links
+                })}
+            ).then(res => {
+                if (res.ok) {
+                    onClose();
+                    props.reloadData();
+                }
+            })
+        }
     }
 
     const onClose = () => {
@@ -58,15 +76,17 @@ export const AddNoteDialog: React.FunctionComponent<Props> = (props) => {
     }
 
     React.useEffect(() => {
+        if (!props.open) return;
         if (props.editingNoteId == "") return;
         const note = findNoteById(props.editingNoteId);
         if (!note) return;
         setTitle(note.title);
         setLinks(note.children);
-    }, [props.editingNoteId]);
+        setImage([]);
+    }, [props.editingNoteId, props.open]);
 
     return (
-        <Dialog open={props.open} onClose={props.onClose} fullWidth maxWidth={'lg'}>
+        <Dialog open={props.open} onClose={onClose} fullWidth maxWidth={'lg'}>
             <DialogTitle>{props.editingNoteId != "" ? `Editing '${findNoteById(props.editingNoteId)?.title}'` : "New Note"}</DialogTitle>
             <DialogContent>
                 <ImageUploader
@@ -118,10 +138,10 @@ export const AddNoteDialog: React.FunctionComponent<Props> = (props) => {
                 </FormControl>
             </DialogContent>
             <DialogActions>
-                <Button onClick={props.onClose} color="secondary">
+                <Button variant="contained" onClick={onClose} color="secondary">
                     Cancel
                 </Button>
-                <Button disabled={image === undefined || title === ""} onClick={onSave} color="primary">
+                <Button variant="contained" disabled={image === undefined || title === ""} onClick={onSave} color="primary">
                     {props.editingNoteId != "" ? "Update" : "Create"}
                 </Button>
             </DialogActions>

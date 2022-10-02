@@ -30,10 +30,10 @@ export const createAppTheme = memoizeOne(() => {
 	let theme = createTheme({
 		palette: {
 			primary: {
-				main: "#F0E5B1",
+				main: "#A0CAD9",
 			},
 			secondary: {
-				main: "#A39B71"
+				main: "#B8F8F8"
 			},
 			background: {
 				default: "#E3F1FF",
