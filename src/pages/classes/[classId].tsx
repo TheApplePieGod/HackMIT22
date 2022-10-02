@@ -61,9 +61,7 @@ const ClassPage: React.FunctionComponent = () => {
         const note = findNoteById(selectedNote);
         if (!note) return result;
         
-        console.log(note.dim)
         note.manims.forEach((m, i) => {
-            console.log(m)
             const widthRatio = m.dim[0] / note.dim[0];
             const heightRatio = m.dim[1] / note.dim[1];
             const posRatioX = m.pos[0] / note.dim[0];
@@ -227,11 +225,11 @@ const ClassPage: React.FunctionComponent = () => {
                         ...transitionStyles2[state]
                         }}>
                             <Paper elevation={5} sx={{
-                                height: "calc(100% - 80px)",
+                                maxHeight: "calc(100vh - 80px)",
+                                overflow: "auto",
                                 margin: "40px",
                                 padding: "10px",
                                 textAlign: "center",
-                                overflow: "auto",
                                 position: "relative"
                             }}>
                                 {selectedNote != "" ?
