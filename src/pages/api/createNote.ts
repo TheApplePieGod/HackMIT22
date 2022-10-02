@@ -13,7 +13,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const body = JSON.parse(req.body);
     const rawImg = body.img;
 
-    const apiRes = await fetch('http://3d31-34-66-160-157.ngrok.io/', {
+    const apiRes = await fetch('http://f609-34-66-160-157.ngrok.io/', {
         method: 'POST',
         headers: {
             "Content-Type": "application/json"
@@ -40,7 +40,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const note : Note = {
         ...JSON.parse(req.body),
         img: json.img,
-        score: 0,
+        score: Math.trunc(Math.random() * 4),
         manims: manims
     }
 

@@ -140,7 +140,7 @@ const ClassPage: React.FunctionComponent = () => {
                     variant="filled"
                   />
                 {classData ?
-                    <Box sx={{ maxHeight: "100%", overflowY: "auto", display: "flex", flexDirection: "column", gap: "5px", paddingBottom: "10px" }}>
+                    <Box sx={{ maxHeight: "100%", overflowY: "auto", overflowX: "hidden", display: "flex", flexDirection: "column", gap: "5px", paddingBottom: "10px" }}>
                         <Paper elevation={3}
                             onClick={() => {
                                 setAddDialogOpen(true);
@@ -166,6 +166,8 @@ const ClassPage: React.FunctionComponent = () => {
                                         setAddDialogOpen(true);
                                     }}
                                     sx={{
+                                        backgroundColor: selectedNote == n._id ? "secondary.main" : "paper.main",
+                                        transition: "background-color 100ms ease-in-out",
                                         display: "flex",
                                         alignItems: "center",
                                         justifyContent: "space-between",

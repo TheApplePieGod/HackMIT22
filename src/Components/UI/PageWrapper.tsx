@@ -1,6 +1,7 @@
 ﻿import * as React from "react";
-import { styled, Box, Button } from "@mui/material";
+import { styled, Box, Button, IconButton } from "@mui/material";
 import { useRouter } from "next/router";
+import HomeIcon from '@mui/icons-material/Home';
 
 interface Props {
     children?: React.ReactElement
@@ -26,7 +27,9 @@ export const PageWrapper: React.FunctionComponent<Props> = (props) => {
                     <Button sx={{ pointerEvents: "all" }} onClick={() => router.push("/classes")} variant="contained">Login</Button>
                 }
                 {router.asPath != "/" &&
-                    <Button sx={{ pointerEvents: "all" }} onClick={() => router.push("/")} variant="contained">Home</Button>
+                    <IconButton sx={{ pointerEvents: "all" }} onClick={() =>router.push("/")} >
+                        <HomeIcon sx={{ color: "text.primary" }} />
+                    </IconButton>
                 }
             </Box>
             <Box>

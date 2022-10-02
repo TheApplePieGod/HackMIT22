@@ -1,4 +1,4 @@
-import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, OutlinedInput, Select, TextField } from "@mui/material";
+import { Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, OutlinedInput, Select, TextField } from "@mui/material";
 import * as React from "react"
 import { ImageUploader } from "./ImageUploader";
 
@@ -16,6 +16,7 @@ export const AddNoteDialog: React.FunctionComponent<Props> = (props) => {
     const [image, setImage] = React.useState<number[] | undefined>(undefined);    
     const [imageDims, setImageDims] = React.useState<number[]>([]);
     const [links, setLinks] = React.useState<string[]>([]);
+    const [loading, setLoading] = React.useState(false);
 
     // https://stackoverflow.com/questions/105034/how-do-i-create-a-guid-uuid
     const uuid = () => {
@@ -32,6 +33,7 @@ export const AddNoteDialog: React.FunctionComponent<Props> = (props) => {
         props.notes.find(n => n._id == id);
 
     const onSave = () => {
+        setLoading(true);
         if (props.editingNoteId == "") {
             fetch(
                 "/api/createNote",
@@ -73,6 +75,7 @@ export const AddNoteDialog: React.FunctionComponent<Props> = (props) => {
         setTitle("");
         setImage(undefined);
         setLinks([]);
+        setLoading(false);
     }
 
     React.useEffect(() => {
@@ -125,15 +128,23 @@ export const AddNoteDialog: React.FunctionComponent<Props> = (props) => {
                         )}
                         //MenuProps={MenuProps}
                     >
-                        {props.notes.map((note) => (
-                            <MenuItem
-                                key={note._id}
-                                value={note._id}
-                                //style={getStyles(name, personName, theme)}
-                            >
-                                {note.title}
-                            </MenuItem>
-                        ))}
+                        {props.notes.map((note) => {
+                            if (note._id == props.editingNoteId) return;
+                            return (
+                                <MenuItem
+                                    key={note._id}
+                                    value={note._id}
+                                    sx={{
+                                        /*"&.Mui-selected": {
+                                            backgroundColor: "primary.main",
+
+                                        }*/
+                                    }}
+                                >
+                                    {note.title}
+                                </MenuItem>
+                            )
+                        })}
                     </Select>
                 </FormControl>
             </DialogContent>
@@ -141,8 +152,13 @@ export const AddNoteDialog: React.FunctionComponent<Props> = (props) => {
                 <Button variant="contained" onClick={onClose} color="secondary">
                     Cancel
                 </Button>
-                <Button variant="contained" disabled={image === undefined || title === ""} onClick={onSave} color="primary">
-                    {props.editingNoteId != "" ? "Update" : "Create"}
+                <Button variant="contained" disabled={loading || image === undefined || title === ""} onClick={onSave} color="primary">
+                    {loading ?
+                        <CircularProgress variant="indeterminate" color="secondary" size="25px" />
+                        : (
+                           props.editingNoteId != "" ? "Update" : "Create" 
+                        )
+                    }
                 </Button>
             </DialogActions>
         </Dialog>
