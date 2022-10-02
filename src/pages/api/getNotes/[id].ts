@@ -7,10 +7,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
     const { id } = req.query;
 
+    const course = await db.collection('courses')
+        .findOne({
+            _id: id
+        });
     const notes = await db.collection('notes')
         .find({
             course: id
         }).toArray();
 
-    res.status(200).json(notes);
+    res.status(200).json({ course, notes });
 }

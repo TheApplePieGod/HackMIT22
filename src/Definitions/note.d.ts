@@ -10,7 +10,7 @@ interface Note {
     author: string,
     img: string,
     dim: [number, number], //width, height in pixels
-    class: string,
+    course: string,
     score: number,
     children: string[]
 }
