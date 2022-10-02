@@ -53,7 +53,7 @@ const NoteForceGraph = React.memo(({notes, displayNote}) => {
         if(result[child] > max) max = result[child]
       }
     }
-    return {"heatmap": result, "max": max};
+    return {"heatmap": result, "max": Math.max(max, 1)};
   }
   const colorData = getHeatmap(notes);
 
@@ -101,7 +101,6 @@ const NoteForceGraph = React.memo(({notes, displayNote}) => {
     const textWidth = wrappedText.maxWidth;
     const textHeight = fontSize * wrappedText.lines.length;
     
-    //const radius = Math.max(textWidth, textHeight) * 0.8
     const radius = radii[node.id];
     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
 
@@ -123,7 +122,7 @@ const NoteForceGraph = React.memo(({notes, displayNote}) => {
     ctx.fillStyle = 'rgb(0, 0, 0)';
 
     wrappedText.lines.forEach((line, i) => ctx.fillText(line, node.x, node.y - (textHeight / 2) + fontSize * i + fontSize / 2))
-    node.bckgRadius = wrappedText.maxWidth;
+    node.bckgRadius = radius;
   }
 
   const nodePointerAreaPaint = (node, color, ctx) => {
