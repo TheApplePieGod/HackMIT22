@@ -2,6 +2,7 @@
 import { Box, Button, Divider, Typography } from "@mui/material";
 import { NextSeo } from "next-seo";
 import Image from "next/image";
+import dynamic from "next/dynamic"
 
 const HomePage = () => {
     return (

@@ -1,8 +1,16 @@
 import * as React from "react";
-import { styled, Box, Button, Paper, Typography, Divider, IconButton } from "@mui/material";
+import { styled, Box, Button, Paper, Typography, Divider, IconButton, TextField, InputAdornment } from "@mui/material";
 import TimelineIcon from '@mui/icons-material/Timeline';
 import DescriptionIcon from '@mui/icons-material/Description';
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
 import { useRouter } from "next/router";
+import { AddNoteDialog } from "src/Components/UI/AddNoteDialog";
+import { NextSeo } from "next-seo";
+import dynamic from "next/dynamic";
+import { Transition } from 'react-transition-group';
+
+const NoteForceGraph = dynamic(() => import("../../Components/UI/NoteForceGraph"), {ssr: false});
 
 enum ViewMode {
     Notes = 0,
@@ -18,28 +26,87 @@ const ClassPage: React.FunctionComponent = () => {
     const [classData, setClassData] = React.useState<{ course: Course; notes: Note[] } | undefined>(undefined);
     const [viewMode, setViewMode] = React.useState(ViewMode.Graph2D);
     const [selectedNote, setSelectedNote] = React.useState("");
+    const [notesFilter, setNotesFilter] = React.useState("");
+    const [addDialogOpen, setAddDialogOpen] = React.useState(false);
+    const [editingNodeId, setEditingNoteId] = React.useState("");
 
     const { classId } = router.query;
 
-    React.useEffect(() => {
-        if (!router.isReady) return;
-        
+    const reloadData = () => {
         fetch(
             `/api/getNotes/${classId}`,
             { method: "GET" }
         ).then(async (res) => {
             if (!res.ok) return;
             const data = await res.json();
-            console.log(data);
             setClassData(data);
         });
+    }
+
+    React.useEffect(() => {
+        if (!router.isReady) return;
+        reloadData();
     }, [router]);
 
     const findNoteById = (id: string) =>
         classData?.notes.find(n => n._id == id);
 
+    const displayNote = (id: string) => {
+        setViewMode(ViewMode.Notes);
+        setSelectedNote(id);
+    }
+
+    const renderGifs = () => {
+        const result: JSX.Element[] = [];
+        const note = findNoteById(selectedNote);
+        if (!note) return result;
+        
+        console.log(note.dim)
+        note.manims.forEach((m, i) => {
+            console.log(m)
+            const widthRatio = m.dim[0] / note.dim[0];
+            const heightRatio = m.dim[1] / note.dim[1];
+            const posRatioX = m.pos[0] / note.dim[0];
+            const posRatioY = m.pos[1] / note.dim[1];
+            
+            result.push(
+                <img src={m.img} key={`${note._id}_g${i}`} style={{
+                    position: "absolute",
+                    width: `${widthRatio*100}%`,
+                    height: `${heightRatio*100}%`,
+                    top: `${posRatioY*100}%`,
+                    left: `${posRatioX*100}%`
+                }} />
+            )
+        });
+
+        return result;
+    }
+
+    const duration = 500;
+
+    const defaultStyle = {
+        transition: `opacity ${duration}ms ease-in-out`,
+        opacity: 0,
+    }
+
+    const transitionStyles: any = {
+        entering: { opacity: 0 },
+        entered:  { opacity: 1 },
+        exiting:  { opacity: 1 },
+        exited:  { opacity: 0 },
+    };
+
+    const transitionRef = React.useRef<HTMLDivElement>();
+
     return (
         <Box>
+            <NextSeo
+                title={`${classData?.course.title ?? "Class"}`}
+                openGraph={{
+                    title: `${classData?.course.title ?? "Class"}`
+                }}
+            />
             <Paper square elevation={3} sx={{
                 width: SIDEBAR_WIDTH,
                 height: "100vh",
@@ -52,12 +119,52 @@ const ClassPage: React.FunctionComponent = () => {
                 <Typography>{classData?.course.title ?? "Loading..."}</Typography>
                 <Typography color="textSecondary">{classData?.course.instructor}</Typography>
                 <Divider sx={{ margin: "0.25rem 0 0.5rem 0" }} />
+                <TextField
+                    placeholder="Filter"
+                    value={notesFilter}
+                    onChange={e => setNotesFilter((e.target.value as string))}
+                    sx={{
+                        marginBottom: "0.5rem",
+                        "& .MuiFilledInput-root": {
+                            height: "50px",
+                            paddingBottom: "15px"
+                        }
+                    }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                            <SearchIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                    variant="filled"
+                  />
                 {classData ?
                     <Box sx={{ maxHeight: "100%", overflowY: "auto", display: "flex", flexDirection: "column", gap: "5px", paddingBottom: "10px" }}>
+                        <Paper elevation={3}
+                            onClick={() => {
+                                setAddDialogOpen(true);
+                                setEditingNoteId("");
+                            }}
+                            sx={{
+                                backgroundColor: "#46ba56",
+                                display: "flex",
+                                alignItems: "center",
+                                width: "100%",
+                                padding: "10px",
+                                cursor: "pointer"
+                            }}
+                        >
+                            <Typography>+ Create</Typography>
+                        </Paper>
                         {
-                            classData.notes.map((n, i) => (
+                            [...classData.notes.filter(n => n.title.toLowerCase().startsWith(notesFilter.toLowerCase()))].sort((a, b) => a.title.localeCompare(b.title)).map((n, i) => (
                                 <Paper elevation={3} key={i} 
                                     onClick={() => setSelectedNote(n._id)}
+                                    onDoubleClick={() => {
+                                        setEditingNoteId(n._id);
+                                        setAddDialogOpen(true);
+                                    }}
                                     sx={{
                                         display: "flex",
                                         alignItems: "center",
@@ -69,7 +176,7 @@ const ClassPage: React.FunctionComponent = () => {
                                         cursor: "pointer"
                                     }}
                                 >
-                                    <Typography>{n.title}</Typography>
+                                    <Typography sx={{ wordWrap: "break-word" }}>{n.title}</Typography>
                                     <Typography color="textSecondary">{n.author}</Typography>
                                 </Paper>
                             ))
@@ -105,9 +212,6 @@ const ClassPage: React.FunctionComponent = () => {
                     height: "100%"
                 }}>
                     <Paper elevation={5} sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
                         height: "calc(100% - 80px)",
                         margin: "40px",
                         padding: "10px",
@@ -116,17 +220,43 @@ const ClassPage: React.FunctionComponent = () => {
                         position: "relative"
                     }}>
                         {selectedNote != "" ?
-                            <img src={findNoteById(selectedNote)?.img} style={{ width: "100%", position: "absolute", top: 0 }} />
+                            <React.Fragment>
+                                <Box sx={{ position: "relative" }}>
+                                    <img src={findNoteById(selectedNote)?.img} style={{
+                                        width: "100%",
+                                    }} />
+                                    {renderGifs()}
+                                </Box>
+                            </React.Fragment>
                             : <Typography variant="h3">No Note Selected</Typography>
                         }
                     </Paper>
                 </Box>
                 <Box sx={{
-                    display: viewMode == ViewMode.Graph2D ? "" : "none"
+                    display: viewMode == ViewMode.Graph2D ? "" : "none",
                 }}>
-                    Graph
+                    {classData && 
+                        <Transition in={viewMode == ViewMode.Graph2D} timeout={duration}>
+                        {state => (
+                            <div style={{
+                            ...defaultStyle,
+                            ...transitionStyles[state]
+                            }}>
+                                <NoteForceGraph notes={classData.notes} displayNote={displayNote}/>
+                            </div>
+                        )}
+                        </Transition>
+                    }
                 </Box>
             </Box>
+            <AddNoteDialog
+                open={addDialogOpen}
+                onClose={() => setAddDialogOpen(false)}
+                courseId={classId as string}
+                notes={classData?.notes ?? []}
+                editingNoteId={editingNodeId}
+                reloadData={reloadData}
+            />
         </Box>
     );
 }
