@@ -18,13 +18,15 @@ export const PageWrapper: React.FunctionComponent<Props> = (props) => {
                 padding: "10px",
                 display: "flex",
                 justifyContent: "flex-end",
-                alignItems: "center"
+                alignItems: "center",
+                zIndex: 2,
+                pointerEvents: "none"
             }}>
                 {router.asPath == "/" &&
                     <Button onClick={() => router.push("/classes")} variant="contained">Login</Button>
                 }
                 {router.asPath != "/" &&
-                    <Button onClick={() => router.push("/")} variant="contained">Home</Button>
+                    <Button sx={{ pointerEvents: "all" }} onClick={() => router.push("/")} variant="contained">Home</Button>
                 }
             </Box>
             <Box>
