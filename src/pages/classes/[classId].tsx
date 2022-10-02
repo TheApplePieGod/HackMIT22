@@ -83,7 +83,7 @@ const ClassPage: React.FunctionComponent = () => {
         return result;
     }
 
-    const duration = 500;
+    const duration = 300;
 
     const defaultStyle = {
         transition: `opacity ${duration}ms ease-in-out`,
@@ -95,6 +95,13 @@ const ClassPage: React.FunctionComponent = () => {
         entered:  { opacity: 1 },
         exiting:  { opacity: 1 },
         exited:  { opacity: 0 },
+    };
+
+    const transitionStyles2: any = {
+        entering: { opacity: 1 },
+        entered:  { opacity: 0 },
+        exiting:  { opacity: 0 },
+        exited:  { opacity: 1 },
     };
 
     const transitionRef = React.useRef<HTMLDivElement>();
@@ -213,32 +220,41 @@ const ClassPage: React.FunctionComponent = () => {
                     width: "100%",
                     height: "100%"
                 }}>
-                    <Paper elevation={5} sx={{
-                        height: "calc(100% - 80px)",
-                        margin: "40px",
-                        padding: "10px",
-                        textAlign: "center",
-                        overflow: "auto",
-                        position: "relative"
-                    }}>
-                        {selectedNote != "" ?
-                            <React.Fragment>
-                                <Box sx={{ position: "relative" }}>
-                                    <img src={findNoteById(selectedNote)?.img} style={{
-                                        width: "100%",
-                                    }} />
-                                    {renderGifs()}
-                                </Box>
-                            </React.Fragment>
-                            : <Typography variant="h3">No Note Selected</Typography>
-                        }
-                    </Paper>
+                    <Transition in={viewMode == ViewMode.Graph2D} timeout={0}>
+                    {state => (
+                        <div style={{
+                        ...defaultStyle,
+                        ...transitionStyles2[state]
+                        }}>
+                            <Paper elevation={5} sx={{
+                                height: "calc(100% - 80px)",
+                                margin: "40px",
+                                padding: "10px",
+                                textAlign: "center",
+                                overflow: "auto",
+                                position: "relative"
+                            }}>
+                                {selectedNote != "" ?
+                                    <React.Fragment>
+                                        <Box sx={{ position: "relative" }}>
+                                            <img src={findNoteById(selectedNote)?.img} style={{
+                                                width: "100%",
+                                            }} />
+                                            {renderGifs()}
+                                        </Box>
+                                    </React.Fragment>
+                                    : <Typography variant="h3">No Note Selected</Typography>
+                                }
+                            </Paper>
+                        </div>
+                    )}
+                    </Transition>
                 </Box>
                 <Box sx={{
                     display: viewMode == ViewMode.Graph2D ? "" : "none",
                 }}>
                     {classData && 
-                        <Transition in={viewMode == ViewMode.Graph2D} timeout={duration}>
+                        <Transition in={viewMode == ViewMode.Graph2D} timeout={0}>
                         {state => (
                             <div style={{
                             ...defaultStyle,
