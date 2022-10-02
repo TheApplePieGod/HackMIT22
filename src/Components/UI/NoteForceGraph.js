@@ -89,7 +89,7 @@ const NoteForceGraph = React.memo(({notes, displayNote}) => {
 
   useEffect(() => {
     graphRef.current.d3Force('link').distance(link => {
-      return (radii[link.source.id] + radii[link.target.id]) * 1.3;
+      return (radii[link.source.id] + radii[link.target.id]) * 1.8;
     });
     //graphRef.current.d3Force('charge').strength(node => -100);
     graphRef.current.zoom(0.9);
