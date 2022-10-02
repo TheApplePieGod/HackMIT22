@@ -23,6 +23,7 @@ const ClassPage: React.FunctionComponent = () => {
     const [selectedNote, setSelectedNote] = React.useState("");
     const [notesFilter, setNotesFilter] = React.useState("");
     const [addDialogOpen, setAddDialogOpen] = React.useState(false);
+    const [editingNodeId, setEditingNoteId] = React.useState("");
 
     const { classId } = router.query;
 
@@ -79,7 +80,10 @@ const ClassPage: React.FunctionComponent = () => {
                 {classData ?
                     <Box sx={{ maxHeight: "100%", overflowY: "auto", display: "flex", flexDirection: "column", gap: "5px", paddingBottom: "10px" }}>
                         <Paper elevation={3}
-                            onClick={() => setAddDialogOpen(true)}
+                            onClick={() => {
+                                setAddDialogOpen(true);
+                                setEditingNoteId("");
+                            }}
                             sx={{
                                 backgroundColor: "#46ba56",
                                 display: "flex",
@@ -95,6 +99,10 @@ const ClassPage: React.FunctionComponent = () => {
                             [...classData.notes.filter(n => n.title.toLowerCase().startsWith(notesFilter.toLowerCase()))].sort((a, b) => a.title.localeCompare(b.title)).map((n, i) => (
                                 <Paper elevation={3} key={i} 
                                     onClick={() => setSelectedNote(n._id)}
+                                    onDoubleClick={() => {
+                                        setEditingNoteId(n._id);
+                                        setAddDialogOpen(true);
+                                    }}
                                     sx={{
                                         display: "flex",
                                         alignItems: "center",
@@ -106,7 +114,7 @@ const ClassPage: React.FunctionComponent = () => {
                                         cursor: "pointer"
                                     }}
                                 >
-                                    <Typography>{n.title}</Typography>
+                                    <Typography sx={{ wordWrap: "break-word" }}>{n.title}</Typography>
                                     <Typography color="textSecondary">{n.author}</Typography>
                                 </Paper>
                             ))
@@ -172,6 +180,7 @@ const ClassPage: React.FunctionComponent = () => {
                 onClose={() => setAddDialogOpen(false)}
                 courseId={classId as string}
                 notes={classData?.notes ?? []}
+                editingNoteId={editingNodeId}
             />
         </Box>
     );

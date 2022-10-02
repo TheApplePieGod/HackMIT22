@@ -7,7 +7,7 @@ interface Props {
     onClose: () => void;
     courseId: string;
     notes: Note[];
-    edit: boolean;
+    editingNoteId: string;
 }
 
 export const AddNoteDialog: React.FunctionComponent<Props> = (props) => {
@@ -37,7 +37,7 @@ export const AddNoteDialog: React.FunctionComponent<Props> = (props) => {
                 _id: uuid(),
                 title: title,
                 author: "Evan",
-                img: b64encode(image ?? []),
+                img: null, //b64encode(image ?? []),
                 dim: imageDims,
                 course: props.courseId,
                 score: 0,
@@ -57,12 +57,21 @@ export const AddNoteDialog: React.FunctionComponent<Props> = (props) => {
         setLinks([]);
     }
 
+    React.useEffect(() => {
+        if (props.editingNoteId == "") return;
+        const note = findNoteById(props.editingNoteId);
+        if (!note) return;
+        setTitle(note.title);
+        setLinks(note.children);
+    }, [props.editingNoteId]);
+
     return (
         <Dialog open={props.open} onClose={props.onClose} fullWidth maxWidth={'lg'}>
-            <DialogTitle>Create Note</DialogTitle>
+            <DialogTitle>{props.editingNoteId != "" ? `Editing '${findNoteById(props.editingNoteId)?.title}'` : "New Note"}</DialogTitle>
             <DialogContent>
                 <ImageUploader
                     title="Upload An Image"
+                    initialSource={props.editingNoteId != "" ? findNoteById(props.editingNoteId)?.img : ""}
                     uploadCallback={async (src, width, height) => {
                         setImage(Array.from(
                             new Uint8Array(await src.arrayBuffer())
@@ -70,6 +79,7 @@ export const AddNoteDialog: React.FunctionComponent<Props> = (props) => {
                         setImageDims([ width, height ]);
                     }}
                     clearCallback={() => setImage(undefined)}
+                    disabled={props.editingNoteId != ""}
                 />
                 <TextField
                     label="Title"
@@ -112,7 +122,7 @@ export const AddNoteDialog: React.FunctionComponent<Props> = (props) => {
                     Cancel
                 </Button>
                 <Button disabled={image === undefined || title === ""} onClick={onSave} color="primary">
-                    Create
+                    {props.editingNoteId != "" ? "Update" : "Create"}
                 </Button>
             </DialogActions>
         </Dialog>
