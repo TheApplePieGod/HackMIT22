@@ -23,7 +23,7 @@ export const PageWrapper: React.FunctionComponent<Props> = (props) => {
                 pointerEvents: "none"
             }}>
                 {router.asPath == "/" &&
-                    <Button onClick={() => router.push("/classes")} variant="contained">Login</Button>
+                    <Button sx={{ pointerEvents: "all" }} onClick={() => router.push("/classes")} variant="contained">Login</Button>
                 }
                 {router.asPath != "/" &&
                     <Button sx={{ pointerEvents: "all" }} onClick={() => router.push("/")} variant="contained">Home</Button>
