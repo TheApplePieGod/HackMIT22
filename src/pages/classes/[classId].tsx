@@ -3,6 +3,9 @@ import { styled, Box, Button, Paper, Typography, Divider, IconButton } from "@mu
 import TimelineIcon from '@mui/icons-material/Timeline';
 import DescriptionIcon from '@mui/icons-material/Description';
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
+
+const NoteForceGraph = dynamic(() => import("../../Components/UI/NoteForceGraph"), {ssr: false});
 
 enum ViewMode {
     Notes = 0,
@@ -37,6 +40,11 @@ const ClassPage: React.FunctionComponent = () => {
 
     const findNoteById = (id: string) =>
         classData?.notes.find(n => n._id == id);
+
+    const displayNote = (id: string) => {
+        setViewMode(ViewMode.Notes);
+        setSelectedNote(id);
+    }
 
     return (
         <Box>
@@ -124,7 +132,7 @@ const ClassPage: React.FunctionComponent = () => {
                 <Box sx={{
                     display: viewMode == ViewMode.Graph2D ? "" : "none"
                 }}>
-                    Graph
+                    {classData && <NoteForceGraph notes={classData.notes} displayNote={displayNote}/>}
                 </Box>
             </Box>
         </Box>
