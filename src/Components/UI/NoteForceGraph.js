@@ -3,9 +3,24 @@ import {useEffect, useRef} from 'react'
 import {Button} from "@mui/material"
 import { ForceGraph2D } from 'react-force-graph';
 import { notStrictEqual } from 'assert';
+import * as d3 from 'd3'
 
 const NoteForceGraph = ({notes, displayNote}) => {
   const graphRef = useRef();
+
+  debugger;
+
+  const getNodes = (notes) => {
+    const result = notes.map((note) => {
+      return {
+        "id": note._id, 
+        "name": note.title, 
+        "x": Math.random() * 800, 
+        "y": Math.random() * 800,
+        "score": note.score
+      }});
+    return result;
+  }
 
   const getLinks = (notes) => {
     let result = []
@@ -16,6 +31,20 @@ const NoteForceGraph = ({notes, displayNote}) => {
     }
     return result;
   }
+
+  const getRadii = (notes) => {
+    let sumPlusOne = 1;
+    for(let note of notes){
+      sumPlusOne += note.score;
+    }
+    let result = {}
+    for(let note of notes){
+      result[note._id] = 30 + 100 * (note.score + 1) / sumPlusOne;
+    }
+    return result;
+  }
+  const radii = getRadii(notes);
+  debugger;
 
   const getHeatmap = (notes) => {
     let result = {}
@@ -30,11 +59,6 @@ const NoteForceGraph = ({notes, displayNote}) => {
     return {"heatmap": result, "max": max};
   }
   const colorData = getHeatmap(notes);
-
-  const getNodes = (notes) => {
-    const result = notes.map((note) => {return {"id": note._id, "name": note.title}});
-    return result;
-  }
 
   const wrapText = (string, width, ctx) => {
     const words = string.split(' ');
@@ -69,6 +93,7 @@ const NoteForceGraph = ({notes, displayNote}) => {
   useEffect(() => {
     graphRef.current.d3Force('link').distance(link => 200);
     graphRef.current.d3Force('charge').strength(node => -100);
+    graphRef.current.zoom(0.9);
   }, [])
 
   const nodeCanvasObject = (node, ctx, globalScale) => {
@@ -78,14 +103,15 @@ const NoteForceGraph = ({notes, displayNote}) => {
     const textWidth = wrappedText.maxWidth;
     const textHeight = fontSize * wrappedText.lines.length;
     
-    const radius = Math.max(textWidth, textHeight) * 0.8
+    //const radius = Math.max(textWidth, textHeight) * 0.8
+    const radius = radii[node.id];
     ctx.fillStyle = 'rgba(255, 255, 255, 1)';
 
     if(!('x' in node)) return;
 
     var grd = ctx.createRadialGradient(node.x, node.y, 5, node.x, node.y, radius);
-    const color = mapNums(colorData.heatmap[node.id], 0, colorData.max, 255, 0)
-    grd.addColorStop(0, `rgb(255, ${color}, ${color}`);
+    const color = mapNums(colorData.heatmap[node.id], 0, colorData.max, 255, 150)
+    grd.addColorStop(0, `rgb(${color * 0.7}, ${color}, 255`);
     grd.addColorStop(1, "white");
     ctx.fillStyle = grd;
 
