@@ -14,7 +14,7 @@ class CustomDocument extends Document {
                     <meta charSet="utf-8" />
                     <link rel="preconnect" href="https://fonts.googleapis.com" />
                     <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" /> 
-                    <link href="https://fonts.googleapis.com/css2?family=Yanone+Kaffeesatz:wght@300;400;700&display=swap" rel="stylesheet" />
+                    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;700&display=swap" rel="stylesheet" />
                     {
                         // Inject MUI styles first to match with the prepend: true configuration
                         // @ts-ignore

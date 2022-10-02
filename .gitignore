@@ -6,3 +6,4 @@ appsettings*
 package-lock.json
 .eslintrc.json
 .DS_Store
+.env

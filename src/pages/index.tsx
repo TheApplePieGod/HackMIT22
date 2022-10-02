@@ -4,10 +4,6 @@ import { NextSeo } from "next-seo";
 import Image from "next/image";
 import dynamic from "next/dynamic"
 
-const NoteForceGraph = dynamic(() => import("./NoteForceGraph"), {ssr: false});
-
-const data = require("../Test/example.json")
-
 const HomePage = () => {
     return (
         <React.Fragment>
@@ -41,12 +37,12 @@ const HomePage = () => {
                                 marginRight: "1rem"
                             }}
                         >
-                            <Image width={"100%"} height={"100%"} alt="App Icon" src="/favicon.ico" />
+                            <Image width={"100%"} height={"100%"} alt="App Icon" src="/images/temp-logo.png" />
                         </Box>
-                        <Typography variant="h2"><b>App</b></Typography>
+                        <Typography variant="h2"><b>Anchor</b></Typography>
                     </Box>
                     <Divider />
-                    <NoteForceGraph/>
+                    <Typography variant="subtitle1" color="textSecondary">Anchor your knowledge</Typography>
                 </Box>
             </Box>
         </React.Fragment>
