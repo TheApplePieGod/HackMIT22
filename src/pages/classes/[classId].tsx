@@ -6,6 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import { useRouter } from "next/router";
 import { AddNoteDialog } from "src/Components/UI/AddNoteDialog";
+import { NextSeo } from "next-seo";
 
 enum ViewMode {
     Notes = 0,
@@ -45,6 +46,12 @@ const ClassPage: React.FunctionComponent = () => {
 
     return (
         <Box>
+            <NextSeo
+                title={`${classData?.course.title ?? "Class"}`}
+                openGraph={{
+                    title: `${classData?.course.title ?? "Class"}`
+                }}
+            />
             <Paper square elevation={3} sx={{
                 width: SIDEBAR_WIDTH,
                 height: "100vh",
