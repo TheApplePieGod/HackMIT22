@@ -59,7 +59,6 @@ const ClassPage: React.FunctionComponent = () => {
                 padding: "5px",
                 top: 0,
                 left: 0,
-                backgroundColor: "primary.main"
             }}>
                 <Typography>{classData?.course.title ?? "Loading..."}</Typography>
                 <Typography color="textSecondary">{classData?.course.instructor}</Typography>

@@ -13,6 +13,14 @@ declare module '@mui/material/styles' {
 		primaryDark?: string;
 		secondaryDark?: string;
 	}
+	
+	interface TypeBackground {
+		paperDark: string;
+	}
+	
+	interface TypeBackgroundOptions {
+		paperDark?: string;
+	}
 }
 
 // https://material.io/resources/color/
@@ -22,16 +30,15 @@ export const createAppTheme = memoizeOne(() => {
 	let theme = createTheme({
 		palette: {
 			primary: {
-				main: "#83a0bf",
-				dark: amber[800]
+				main: "#F0E5B1",
 			},
 			secondary: {
-				main: deepOrange[500],
-				dark: deepOrange[800]
+				main: "#A39B71"
 			},
 			background: {
 				default: "#E3F1FF",
-				paper: "#BED6F0"
+				paper: "#BED6F0",
+				paperDark: ""
 			},
 			text: {
 				primary: "#1C2229",
