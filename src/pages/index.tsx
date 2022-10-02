@@ -2,6 +2,11 @@
 import { Box, Button, Divider, Typography } from "@mui/material";
 import { NextSeo } from "next-seo";
 import Image from "next/image";
+import dynamic from "next/dynamic"
+
+const NoteForceGraph = dynamic(() => import("./NoteForceGraph"), {ssr: false});
+
+const data = require("../Test/example.json")
 
 const HomePage = () => {
     return (
@@ -41,6 +46,7 @@ const HomePage = () => {
                         <Typography variant="h2"><b>App</b></Typography>
                     </Box>
                     <Divider />
+                    <NoteForceGraph/>
                 </Box>
             </Box>
         </React.Fragment>
