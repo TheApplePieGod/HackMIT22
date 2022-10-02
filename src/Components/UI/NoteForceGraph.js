@@ -88,7 +88,9 @@ const NoteForceGraph = React.memo(({notes, displayNote}) => {
   }
 
   useEffect(() => {
-    graphRef.current.d3Force('link').distance(link => 200);
+    graphRef.current.d3Force('link').distance(link => {
+      return (radii[link.source.id] + radii[link.target.id]) * 1.3;
+    });
     //graphRef.current.d3Force('charge').strength(node => -100);
     graphRef.current.zoom(0.9);
     graphRef.current.d3Force('collide', d3.forceCollide(60));
@@ -143,7 +145,7 @@ const NoteForceGraph = React.memo(({notes, displayNote}) => {
         nodePointerAreaPaint={nodePointerAreaPaint}
         nodeRelSize={20}
         linkColor={() => "#222222"}
-        linkDirectionalArrowLength={20}
+        linkDirectionalArrowLength={40}
         linkDirectionalArrowRelPos={0.5}
         linkWidth={5}
         onNodeClick={(node) => displayNote(node.id)}

@@ -46,8 +46,9 @@ const WavyLine = styled("div")({
     width: "600px",
 	margin: "2rem auto",
 	position: "relative",
-	height: "24px",
-	background: "url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/423754/wave.svg') repeat-x 0%",
+	height: "35px",
+    padding: "10px",
+	background: "url('/images/wave.svg') repeat-x 0%",
 	backgroundSize: "contain",
 	animation: "30s otherwave linear infinite",
 	
@@ -107,7 +108,7 @@ const HomePage = () => {
                 }}>Anchor your knowledge</Typography>
                 <WavyLine sx={{
                     position: "absolute",
-                    top: "40%",
+                    top: "37%",
                     right: "50%",
                     transform: "translateX(50%)"
                 }}/>
