@@ -1,6 +1,6 @@
 # Anchor
 
-Anchor is a collaborative learning tool where students in a class can share notes and view them as an interconnected concept map. Notes which are liked by many students in the class appear larger, incentivizing students to make their own unique and powerful contributions to the shared knowledge base. Additionally, Anchor uses AI to bring your handwritten notes to life by automatically embedding beautiful mathematical animations.
+Built by four freshmen and inspired by the struggles of online learning, Anchor is a collaborative learning tool where students in a class can share notes and view them as an interconnected concept map. Notes which are liked by many students in the class appear larger, incentivizing students to make their own unique and powerful contributions to the shared knowledge base. Additionally, Anchor uses AI to bring your handwritten notes to life by automatically embedding beautiful mathematical animations.
 
 ## Attributions
 
