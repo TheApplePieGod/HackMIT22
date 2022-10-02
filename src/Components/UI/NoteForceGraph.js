@@ -5,10 +5,8 @@ import { ForceGraph2D } from 'react-force-graph';
 import { notStrictEqual } from 'assert';
 import * as d3 from 'd3'
 
-const NoteForceGraph = ({notes, displayNote}) => {
+const NoteForceGraph = React.memo(({notes, displayNote}) => {
   const graphRef = useRef();
-
-  debugger;
 
   const getNodes = (notes) => {
     const result = notes.map((note) => {
@@ -44,7 +42,6 @@ const NoteForceGraph = ({notes, displayNote}) => {
     return result;
   }
   const radii = getRadii(notes);
-  debugger;
 
   const getHeatmap = (notes) => {
     let result = {}
@@ -92,13 +89,14 @@ const NoteForceGraph = ({notes, displayNote}) => {
 
   useEffect(() => {
     graphRef.current.d3Force('link').distance(link => 200);
-    graphRef.current.d3Force('charge').strength(node => -100);
+    //graphRef.current.d3Force('charge').strength(node => -100);
     graphRef.current.zoom(0.9);
+    graphRef.current.d3Force('collide', d3.forceCollide(60));
   }, [])
 
   const nodeCanvasObject = (node, ctx, globalScale) => {
-    const fontSize = 12;
-    ctx.font = `${fontSize}px Sans-Serif`;
+    const fontSize = 14;
+    ctx.font = `bold ${fontSize}px Fira Sans`;
     const wrappedText = wrapText(node.name, 100, ctx)
     const textWidth = wrappedText.maxWidth;
     const textHeight = fontSize * wrappedText.lines.length;
@@ -154,6 +152,6 @@ const NoteForceGraph = ({notes, displayNote}) => {
       />
     </div>
   }</div>);
-}
+});
 
 export default NoteForceGraph;

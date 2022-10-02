@@ -4,6 +4,7 @@ import TimelineIcon from '@mui/icons-material/Timeline';
 import DescriptionIcon from '@mui/icons-material/Description';
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
+import { Transition } from 'react-transition-group';
 
 const NoteForceGraph = dynamic(() => import("../../Components/UI/NoteForceGraph"), {ssr: false});
 
@@ -45,6 +46,22 @@ const ClassPage: React.FunctionComponent = () => {
         setViewMode(ViewMode.Notes);
         setSelectedNote(id);
     }
+
+    const duration = 500;
+
+    const defaultStyle = {
+        transition: `opacity ${duration}ms ease-in-out`,
+        opacity: 0,
+    }
+
+    const transitionStyles: any = {
+        entering: { opacity: 0 },
+        entered:  { opacity: 1 },
+        exiting:  { opacity: 1 },
+        exited:  { opacity: 0 },
+    };
+
+    const transitionRef = React.useRef<HTMLDivElement>();
 
     return (
         <Box>
@@ -130,9 +147,20 @@ const ClassPage: React.FunctionComponent = () => {
                     </Paper>
                 </Box>
                 <Box sx={{
-                    display: viewMode == ViewMode.Graph2D ? "" : "none"
+                    display: viewMode == ViewMode.Graph2D ? "" : "none",
                 }}>
-                    {classData && <NoteForceGraph notes={classData.notes} displayNote={displayNote}/>}
+                    {classData && 
+                        <Transition in={viewMode == ViewMode.Graph2D} timeout={duration}>
+                        {state => (
+                            <div style={{
+                            ...defaultStyle,
+                            ...transitionStyles[state]
+                            }}>
+                                <NoteForceGraph notes={classData.notes} displayNote={displayNote}/>
+                            </div>
+                        )}
+                        </Transition>
+                    }
                 </Box>
             </Box>
         </Box>
