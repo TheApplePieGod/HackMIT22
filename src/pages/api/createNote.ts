@@ -10,6 +10,22 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const client = await clientPromise;
     const db = client.db('prod');
 
+    const body = JSON.parse(req.body);
+    const rawImg = body.img;
+
+    console.log(rawImg);
+    const apiRes = await fetch('http://197d-34-142-217-42.ngrok.io/', {
+        method: 'POST',
+        body: JSON.stringify({
+            base64: rawImg
+        })
+    });
+    const json = await apiRes.json();
+    console.log(json);
+
+    res.status(200).end();
+    return;
+
     let note : Note = {
         ...JSON.parse(req.body),
         score: 0,
