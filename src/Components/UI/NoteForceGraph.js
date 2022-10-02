@@ -8,13 +8,21 @@ import * as d3 from 'd3'
 const NoteForceGraph = React.memo(({notes, displayNote}) => {
   const graphRef = useRef();
 
+  const [nodes, setNodes] = React.useState([]);
+  const [links, setLinks] = React.useState([]);
+
+  React.useEffect(() => {
+    setNodes(getNodes(notes));
+      setLinks(getLinks(notes));
+  }, [])
+
   const getNodes = (notes) => {
     const result = notes.map((note) => {
       return {
         "id": note._id, 
         "name": note.title, 
-        "x": Math.random() * 800, 
-        "y": Math.random() * 800,
+        //"x": Math.random() * 800, 
+        //"y": Math.random() * 800,
         "score": note.score
       }});
     return result;
@@ -140,7 +148,7 @@ const NoteForceGraph = React.memo(({notes, displayNote}) => {
     {notes && <div>
       <ForceGraph2D
         ref={graphRef}
-        graphData={{"nodes": getNodes(notes), "links": getLinks(notes)}}
+        graphData={{"nodes": nodes, "links": links}}
         nodeCanvasObject={nodeCanvasObject}
         nodePointerAreaPaint={nodePointerAreaPaint}
         nodeRelSize={20}
